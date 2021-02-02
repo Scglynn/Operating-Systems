@@ -1,7 +1,9 @@
-#include<string.h>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include<sys/wait.h>
+
+//#include <unistd.h>
 
  int main(int argc, char *argv[]) {
     int id = fork();
@@ -21,7 +23,8 @@
         printf("%d ", i);
         fflush(stdout);
     }
-     
-    printf("\n");
+    if(id != 0){
+        printf("\n");
+    }
     return 0;
 }
