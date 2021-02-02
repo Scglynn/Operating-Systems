@@ -1,9 +1,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include<sys/wait.h>
-
-//#include <unistd.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
  int main(int argc, char *argv[]) {
     int id = fork();
