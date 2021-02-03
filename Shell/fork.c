@@ -2,8 +2,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-int
-main(int argc, char *argv[])
+int main()
 {
     printf("hello world (pid:%d)\n", getpid());
     int rc = fork();
