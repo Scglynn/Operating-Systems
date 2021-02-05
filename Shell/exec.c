@@ -5,5 +5,8 @@ int main()
 {
     printf("hello world (pid:%d)\n", getpid());
     int rc = execlp("ls","ls",NULL);
-    fprintf(stderr, "exec failed\n");
+    if(rc < 0)
+        fprintf(stderr, "exec failed\n");
+    else
+        printf("it worked!\n");
 }

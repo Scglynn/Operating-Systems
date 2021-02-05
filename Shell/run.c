@@ -14,11 +14,12 @@ int main()
     else if (rc == 0) {
         // child -- "restart"
         execlp("ls","ls",NULL);
+        
         fprintf(stderr, "exec failed\n");
     } 
     else {
         // parent -- wait and report
-        //wait(NULL);
+        wait(NULL);
         printf("finished process %d (pid:%d)\n",rc,getpid());
     }
 }

@@ -18,12 +18,12 @@ int main(){
 
         printf("My shell>> ");                    //print shell prompt
 
-            if(!fgets(line, BUFFER_LEN, stdin)){  //get command and put it in line
-            break;                                //if user hits CTRL+D break
-            size_t length = strlen(line);
-            if (line[length - 1] == '\n')
-                line[length - 1] = '\0';
-        }
+        if(!fgets(line, BUFFER_LEN, stdin))
+            break;
+        size_t length = strlen(line);
+        if (line[length - 1] == '\n')
+            line[length - 1] = '\0';
+        
         if(strcmp(line, "exit")==0){            //check if command is exit
             break;
         }

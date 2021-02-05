@@ -1,4 +1,4 @@
-scommand cmd;
+command cmd;
 
 char*line;
 char buffer[1000];
@@ -18,3 +18,18 @@ if(rc==0){
 }
 
 ls *.txt > out.txt
+
+
+
+
+
+
+
+shell >     ls > dir1.txt
+shell >     & ls > dir2.txt
+shell >     & echo hi mom > hi.txt
+shell>      bg
+6 7 8 
+shell>
+
+echo hi mom | wc | wc | cat.....(we don't have to worry about)
