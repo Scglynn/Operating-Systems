@@ -1,40 +1,26 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "parse.c"
 
-int main() {
+int main(int argc, char* argv[]) {
 
-    char fnctn;
-    scanf("%c",&fnctn);
+    command cmd;
+    char*line;
 
-    switch (fnctn)
+    int rc = parse(line, &cmd);
+
+    if (rc == 0)
     {
-        case'exit':
-            return 0;
-            break;
-        case'bg':
-            printf("hello world (pid:%d)\n", getpid());
-            int rc = fork();
-            if (rc < 0)
-            {
-                //fork failed
-                fprintf(stderr, "fork failed\n");
-            } else if (rc == 0) {
-                //child (new process)
-                printf("hello, I am child (pid:%d)\n", getpid());
-            } else {
-                //parent goes down this path (main)
-                printf("hello, I am parent of %d (pid:%d)\n",rc,getpid());
-            }
-            break;
-        case 'ls':
-            
-            break;
-        default:
-            printf("Invalid command\n");
-            break;
+
+        cmd.argv[0];
+        cmd.argc;
+        cmd.bg;
+        cmd.input;
+        cmd.output;
     }
+    
+    
+
     return 0;
 }
