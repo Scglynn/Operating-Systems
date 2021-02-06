@@ -6,7 +6,9 @@ int
 main(int argc, char* argv[]) {
 
     char* input = (char*)malloc(1024);
+    char* output = (char*)malloc(1024);
     command cmd;
+    
 
     
 
@@ -19,8 +21,39 @@ main(int argc, char* argv[]) {
         
         if (strcmp(input, cmd.argv[0]="exit")==0)
         {
-            free(input);
-            exit();
+            wait();
+        }
+        if (strcmp(input,cmd.argv[0]="echo")==0)
+        {
+            if (rc<0)
+            {
+                printf(2,"fork failed");
+            }else if (rc == 0)
+            {
+                exec(input,cmd.argv);
+                printf(2,"exec failed\n");
+                
+            }else{
+                
+                
+                wait();
+            }
+        }
+        if (strcmp(input,cmd.argv[0]="bg")==0)
+        {
+            if (rc<0)
+            {
+                printf(2,"fork failed");
+            }else if (rc == 0)
+            {
+                exec(input,cmd.argv);
+                printf(2,"exec failed\n");
+                
+            }else{
+                
+                
+                wait();
+            }
         }
         
         if (strcmp(input, cmd.argv[0]="ls")==0)
@@ -35,7 +68,7 @@ main(int argc, char* argv[]) {
                 printf(2,"exec failed\n");
             }else{
                 wait();
-                printf(1,"finished process %d (pid:%d)\n",rc,getpid());
+                //printf(1,"finished process %d (pid:%d)\n",rc,getpid());
             }
         }
         
