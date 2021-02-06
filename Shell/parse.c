@@ -1,16 +1,24 @@
+#include "types.h"
+#include "stat.h"
+#include "user.h"
 #include "parse.h"
+
+int isspace(char c)
+{
+    return c==' ' || c=='\t' || c=='\n' || c=='\r';
+}
 
 char *strtok(char **s)
 {
     if (!s) return 0;
-    while (**s==' ' || **s=='\t')
+    while (isspace(**s))
         (*s)++;
     if (**s == 0)
         return 0;
     char * r = *s;
-    while (**s!=' ' && **s!='\t' && **s)
+    while (!isspace(**s) && **s)
         (*s)++;
-    if (!**s) 
+    if (!**s)
         s = 0;
     else {
         **s=0;
