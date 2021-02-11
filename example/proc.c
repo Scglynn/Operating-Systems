@@ -573,26 +573,16 @@ ps()
 int
 priority(int pid, int priority)
 {
- struct proc *p;
+    struct proc *p;
 
- acquire(&ptable.lock);
- for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
- if(p->pid == pid) {
- p->priority = priority;
- break;
- }
- }
- release(&ptable.lock);
- return pid;
- }
-
-int
-sys_priority (void)
-{
- int pid, pr;
- if(argint(0, &pid) < 0)
- return -1;
- if(argint(1, &pr) < 0)
- return -1;
- return priority (pid, pr);
+    acquire(&ptable.lock);
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->pid == pid) {
+      priority=p->priority;
+      break;
+      }
+    }
+    release(&ptable.lock);
+    return pid;
 }
+
