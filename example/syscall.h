@@ -20,5 +20,5 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
-#define SYS_ps     23
-#define SYS_priority 24
+#define SYS_ps     22
+#define SYS_priority 23

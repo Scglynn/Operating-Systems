@@ -143,6 +143,8 @@ userinit(void)
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
 
+  p->priority = 10;
+
   // this assignment to p->state lets other cores
   // run this process. the acquire forces the above
   // writes to be visible, and the lock is also needed
@@ -218,6 +220,9 @@ fork(void)
   np->state = RUNNABLE;
 
   release(&ptable.lock);
+
+  //set the child priority to equal the current process priority
+  np->priority=curproc->priority;
 
   return pid;
 }
@@ -524,7 +529,7 @@ procdump(void)
       state = states[p->state];
     else
       state = "???";
-    cprintf("%d %s %s", p->pid, state, p->name);
+    cprintf("%d %s %s (%d)", p->pid, state, p->name, p->priority);
     if(p->state == SLEEPING){
       getcallerpcs((uint*)p->context->ebp+2, pc);
       for(i=0; i<10 && pc[i] != 0; i++)
@@ -542,29 +547,21 @@ ps()
 	sti();
 
 	acquire(&ptable.lock);
-	cprintf("name \t pid \t state \tpriority \n");
+	cprintf("name \t pid \t state \t priority \n");
 	for(p=ptable.proc; p<&ptable.proc[NPROC];p++)
 	{
-    
 		if(p->state==SLEEPING)
-			//cprintf("%s \t %d \t SLEEPING \t %d.%d \n",p->name, p->pid,(curr_time-p->start_time)/100,(curr_time-p->start_time)%100);
       cprintf("%s \t %d \t SLEEPING \t %d \n ", p->name, p->pid , p->priority);
 		else if(p->state==RUNNING)
-			//cprintf("%s \t %d \t RUNNING \t %d.%d \n", p->name, p->pid,(curr_time-p->start_time)/100,(curr_time-p->start_time)%100);
       cprintf("%s \t %d \t RUNNING \t %d \n ", p->name, p->pid ,p->priority);
 		else if(p->state==RUNNABLE)
-			//cprintf("%s \t %d \t RUNNABLE \t %d.%d \n",p->name, p->pid,(curr_time-p->start_time)/100,(curr_time-p->start_time)%100);
       cprintf("%s \t %d \t RUNNABLE \t %d \n ", p->name, p->pid ,p->priority);
 
 		else if(p->state==ZOMBIE)
-			//cprintf("%s \t %d \t ZOMBIE \t %d.%d \n",p->name, p->pid,(curr_time-p->start_time)/100,(curr_time-p->start_time)%100);
       cprintf("%s \t %d \t ZOMBIE \t %d \n ", p->name, p->pid ,p->priority);
-
-		
 	}
 
 	release(&ptable.lock);
-
 	return 22;
 
 } 
@@ -575,14 +572,14 @@ priority(int pid, int priority)
 {
     struct proc *p;
 
+    // Loop over the processing table looking for a process to run.
     acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->pid == pid) {
-      priority=p->priority;
+      priority = p->priority;
       break;
       }
     }
     release(&ptable.lock);
     return pid;
 }
-
