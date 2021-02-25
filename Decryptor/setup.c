@@ -15,8 +15,3 @@ void setup()
 }
 
 //this will take in the message and decode it for us
-
-int main()
-{
-    
-}
