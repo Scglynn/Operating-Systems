@@ -7,6 +7,7 @@ static char * message;
 extern unsigned hash(char *str);
 extern int check(char *password);
 extern void decrypt(char *password,char *message);
+//extern int main(int argc, char **argv);
 
 
 void setup()
@@ -16,8 +17,15 @@ void setup()
     password_hash = 0x41c18b8e;
     message = (char *)encoded;
 
-    check(message);
-    decrypt((char *)encoded,message);
+    if (!check((char *)password_hash))
+        hash((char *)password_hash) == password_hash;
+    else
+    {
+        decrypt((char *)password_hash,message);
+    }
+    
+    
+    
     
 
 }
