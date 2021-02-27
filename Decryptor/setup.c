@@ -1,10 +1,13 @@
-extern unsigned hash(char *str);
-extern int check(char *password);
-extern void decrypt(char *password,char *message);
+#include <stdio.h>
 
 static int shift;
 static unsigned password_hash;
 static char * message;
+
+extern unsigned hash(char *str);
+extern int check(char *password);
+extern void decrypt(char *password,char *message);
+
 
 void setup()
 {
@@ -12,6 +15,9 @@ void setup()
     shift = 8;
     password_hash = 0x41c18b8e;
     message = (char *)encoded;
-}
 
-//this will take in the message and decode it for us
+    check(message);
+    decrypt((char *)encoded,message);
+    
+
+}
