@@ -35,7 +35,7 @@ int main(__attribute__((unused)) int argc, const char* sam_file[])
         read_matrices();
         clock_gettime(CLOCK_REALTIME, &end);
         read = 1000000000 * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
-        
+        //end reading clock
 
 
         //start computing clock
@@ -43,13 +43,14 @@ int main(__attribute__((unused)) int argc, const char* sam_file[])
         mult_matrices();
         clock_gettime(CLOCK_REALTIME, &end);
         comp = 1000000000 * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
+        //end computing clock
 
         //start writing clock
         clock_gettime(CLOCK_REALTIME, &start);
         show_matrices();
         clock_gettime(CLOCK_REALTIME, &end);
         writ = 1000000000 * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
-        
+        //end writing clock
 
         clock_gettime(CLOCK_REALTIME, &end);
         diff = 1000000000 * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
