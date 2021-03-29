@@ -1,17 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <malloc.h>
 #include <time.h>
 
 
-// uint64_t diff;
-// struct timespec start, end;
-// clock_gettime(CLOCK_REALTIME, &start);
-// /* do stuff */
-// clock_gettime(CLOCK_REALTIME, &end);
-// diff = 1000000000 * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
-// printf("elapsed time = %luns\n", diff);
 
 void read_matrices() {
 
@@ -23,36 +15,53 @@ void show_matrices() {
 
 }
 
-int main(__attribute__((unused)) int argc,const char* sam_file[]) 
+int main(__attribute__((unused)) int argc, const char* sam_file[]) 
 {
     FILE *fPointer;
+    uint64_t diff,writ,comp,read;
+    struct timespec start, end;
 
-    //char c;
 
     fPointer = fopen(sam_file[1], "r");
 
-    // while(1)
-    // {
-    //     c = getc(fPointer);
+    while(1)
+    {
+        //start the elapsed clock
+        clock_gettime(CLOCK_REALTIME, &start);
 
-    // }
+        // initialize any global variables
+        //start reading clock
+        clock_gettime(CLOCK_REALTIME, &start);
+        read_matrices();
+        clock_gettime(CLOCK_REALTIME, &end);
+        read = 1000000000 * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
+        
+
+
+        //start computing clock
+        clock_gettime(CLOCK_REALTIME, &start);
+        mult_matrices();
+        clock_gettime(CLOCK_REALTIME, &end);
+        comp = 1000000000 * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
+
+        //start writing clock
+        clock_gettime(CLOCK_REALTIME, &start);
+        show_matrices();
+        clock_gettime(CLOCK_REALTIME, &end);
+        writ = 1000000000 * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
+        
+
+        clock_gettime(CLOCK_REALTIME, &end);
+        diff = 1000000000 * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
+
+        // report time
+        printf("Reading:       %luns\n", read);
+        printf("Compute:       %luns\n", comp);
+        printf("Writing:       %luns\n", writ);
+        printf("Elapsed:       %luns\n", diff);
+
+    }
     fclose(fPointer);
-
-    // initialize any global variables
-    //start the elapsed clock
-
-    read_matrices();
-    //start reading clock
-
-
-    mult_matrices();
-    //start computing clock
-
-
-    show_matrices();
-    //start writing clock
-
-    // report time
 
     return 0;
 }
