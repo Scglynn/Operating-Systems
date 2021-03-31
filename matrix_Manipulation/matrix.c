@@ -18,7 +18,6 @@ int results[MAX][MAX];
 
 void read_matrices() {
     //this will read in what is inside the binary file and create the desired matrices
-
     //this will make the size of the matrix
     scanf("%d %d", &arows, &acolumns);
 
@@ -79,7 +78,7 @@ int main(__attribute__((unused)) int argc, const char* sam_file[])
     uint64_t diff,writ,comp,read;
     struct timespec start, end;
 
-    int fPointer = open(sam_file[1], O_RDONLY,O_WRONLY);
+    int fPointer = open(sam_file[1], O_RDONLY|O_WRONLY);
     //start the elapsed clock
     clock_gettime(CLOCK_REALTIME, &start);
 
