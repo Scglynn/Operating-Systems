@@ -19,29 +19,30 @@ int results[MAX][MAX];
 void read_matrices() {
     //this will read in what is inside the binary file and create the desired matrices
     //this will make the size of the matrix
-    scanf("%d %d", &arows, &acolumns);
+    if(scanf("%d %d", &arows, &acolumns) != 2) return;
 
     //this will take in the elements for the first matrix
     for (i = 0; i < arows; i++)
     {
         for (j = 0; j < acolumns; j++)
         {
-            scanf("%d", &matrix[i][j]);
+            if(scanf("%d", &matrix[i][j]) != 1) return;
         }
     }
     //this will make the size of the second matrix
-    scanf("%d %d", &arows, &bcolumns);
+    if(scanf("%d %d", &arows, &bcolumns) != 2)return;
 
     //this will take in the elements for the second matrix
     for (i = 0; i < brows; i++)
     {
         for (j = 0; j < bcolumns; j++)
         {
-            scanf("%d ", &matrix2[i][j]);
+            if(scanf("%d ", &matrix2[i][j]) != 1)return;
         }
     }
     printf("using read matrices function\n");
 }
+
 void mult_matrices() {
 
    // Multiplying first and second matrices and storing it in result
