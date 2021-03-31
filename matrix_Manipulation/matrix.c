@@ -46,6 +46,7 @@ void read_matrices() {
 void mult_matrices() {
 
    // Multiplying first and second matrices and storing it in result
+   //then we will also sort each row in ascending order
    for (i = 0; i < arows; ++i) {
       for (j = 0; j < bcolumns; ++j) {
          for (k = 0; k < brows; ++k) {
