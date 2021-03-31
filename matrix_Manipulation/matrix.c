@@ -2,10 +2,17 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <time.h>
+#include <math.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 
 
 void read_matrices() {
+    // int i, j,k,l;
+    // int matrix [i][j];
+
+
 
 }
 void mult_matrices() {
