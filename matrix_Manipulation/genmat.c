@@ -4,18 +4,20 @@
 #include <fcntl.h>
 #include <time.h>
 
+struct header {
+    int rows;
+    int cols;
+};
+
 int main(int argc, char *argv[])
 {
     if (argc != 4) {
-        printf("usage: %s <num> <max> <name>\n",argv[0]);
+        printf("usage: %s <rows> <cols> <name>\n",argv[0]);
         return 1;
     }
-    int N = atoi(argv[1]);
-    int MAX = atoi(argv[2]);
-    if (N < 1 || MAX < 2) {
-        printf("bad parameters (%d,%d)\n",N,MAX);
-        return 1;
-    }
+    struct header hdr; 
+    hdr.rows = atoi(argv[1]);
+    hdr.cols = atoi(argv[2]);
 
     int fd = open(argv[3],O_CREAT|O_TRUNC|O_WRONLY,0666);
     if (fd < 0) {
@@ -24,23 +26,14 @@ int main(int argc, char *argv[])
     }
     
     srand((unsigned)time(NULL));
-    int rows,cols;
-    cols = 1+rand()%MAX;
-    for (int i=0; i<N; i++) {
-        // output each matrix
-        rows = cols;
-        cols = 1+rand()%MAX;
-        if (write(fd,&rows,sizeof(rows)) != sizeof(rows)) goto bad;
-        if (write(fd,&cols,sizeof(cols)) != sizeof(cols)) goto bad;
 
-        for (int j=0; j<rows*cols; j++) {
-            int x = rand();
-            if (write(fd,&x,sizeof(x)) != sizeof(x)) goto bad;
-        }
+    // output matrix
+    if (write(fd,&hdr,sizeof(hdr)) != sizeof(hdr)) goto bad;
+
+    for (int j=0; j<hdr.rows*hdr.cols; j++) {
+        int x = rand();
+        if (write(fd,&x,sizeof(x)) != sizeof(x)) goto bad;
     }
-    rows = cols = 0;
-    if (write(fd,&rows,sizeof(rows)) != sizeof(rows)) goto bad;
-    if (write(fd,&cols,sizeof(cols)) != sizeof(cols)) goto bad;
     close(fd);
     return 0;
 
