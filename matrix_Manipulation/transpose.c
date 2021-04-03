@@ -28,17 +28,37 @@ int main(int argc, char *argv[])
     int fd = open(input_file, O_RDONLY, 0666);
     if (fd < 0)
     {
-        printf("Failed to create and open the file");
+        printf("Failed to read and open the file");
         exit(1);
     }
+
+    //stores(reads) in the matrix with all of it's elements
     if(read(fd,&matrices,sizeof(matrices)) != sizeof(matrices)) goto bad;
     for (int i = 0; i < matrices.row*matrices.column; i++)
     {
-        int x;
-        if(read(fd, &x, sizeof(x)) != sizeof(x)) goto bad;
+        //places the elements
+        int * x = malloc(100*sizeof(int));
+        if(read(fd, x, sizeof(x)) != sizeof(x)) goto bad;
     }
-    
+
     close(fd);
+
+
+    //this will write the transpose matrices to the outputfile 
+    int out = open(output_file, O_CREAT|O_WRONLY,0666);
+    if (out < 0)
+    {
+        printf("Failed to create and open the file");
+        exit(1);
+    }
+    if(write(out,&matrices,sizeof(matrices)) != sizeof(matrices)) goto bad1;
+    for(int j = 0; j < matrices.row*matrices.column; j++)
+    {
+        //places the elements
+        int y;
+        if(write(out, &y, sizeof(y)) != sizeof(y)) goto bad1;
+    }
+    close(out);
     return 0;
 
 bad:
@@ -46,5 +66,9 @@ bad:
     close(fd);
     return 1;
 
+bad1:
+    printf("write failed\n");
+    close(out);
+    return 1;
 
 }
