@@ -37,10 +37,11 @@ int main(int argc, char *argv[])
     for (int i = 0; i < matrices.row*matrices.column; i++)
     {
         //places the elements
-        int * x = malloc(100*sizeof(int));
+        int * x =(int *)malloc(matrices.row*matrices.column*sizeof(int));
         if(read(fd, x, sizeof(x)) != sizeof(x)) goto bad;
+        free(x);
     }
-
+    
     close(fd);
 
 
@@ -55,9 +56,11 @@ int main(int argc, char *argv[])
     for(int j = 0; j < matrices.row*matrices.column; j++)
     {
         //places the elements
-        int y;
-        if(write(out, &y, sizeof(y)) != sizeof(y)) goto bad1;
+        int * y = (int *)malloc(matrices.row*matrices.column*sizeof(int));
+        if(write(out, y, sizeof(y)) != sizeof(y)) goto bad1;
+        free(y);
     }
+    
     close(out);
     return 0;
 
