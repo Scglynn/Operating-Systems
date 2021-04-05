@@ -33,12 +33,10 @@ int main(int argc, char *argv[])
     for (int i = 0; i < matrices.row/**matrices.column*/; i++)
     {
         //places the elements
-        int * x =(int *)malloc(matrices.row*matrices.column*sizeof(int));
+        int * x =(int *)malloc(matrices.row*matrices.column*sizeof(* x));
         if(read(fd, x, sizeof(x)) != sizeof(x)) goto bad3;
         free(x);
     }
-    close(fd);
-
 
     //this will write the transpose matrices to the outputfile 
     int out = open(output_file, O_CREAT|O_WRONLY,0666);
@@ -51,11 +49,12 @@ int main(int argc, char *argv[])
     for(int j = 0; j < matrices.row*matrices.column; j++)
     {
         //places the elements
-        int * y = (int *)malloc(matrices.row*matrices.column*sizeof(int));
+        int * y = (int *)malloc(matrices.row*matrices.column*sizeof(* y));
         if(write(out, y, sizeof(y)) != sizeof(y)) goto bad1;
         free(y);
     }
-    
+
+    close(fd);
     close(out);
     return 0;
 
