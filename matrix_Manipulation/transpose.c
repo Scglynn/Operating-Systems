@@ -11,8 +11,6 @@ struct matrix {
 
 int main(int argc, char *argv[]) 
 {
-    
-    
     struct matrix matrices;
     char * input_file;
     char * output_file;
@@ -31,17 +29,15 @@ int main(int argc, char *argv[])
         printf("Failed to read and open the file");
         exit(1);
     }
-
     //stores(reads) in the matrix with all of it's elements
     if(read(fd,&matrices,sizeof(matrices)) != sizeof(matrices)) goto bad;
     for (int i = 0; i < matrices.row*matrices.column; i++)
     {
         //places the elements
         int * x =(int *)malloc(matrices.row*matrices.column*sizeof(int));
-        if(read(fd, x, sizeof(x)) != sizeof(x)) goto bad;
+        if(read(fd, x, sizeof(x)) != sizeof(x)) goto bad3;
         free(x);
     }
-    
     close(fd);
 
 
@@ -72,6 +68,10 @@ bad:
 bad1:
     printf("write failed\n");
     close(out);
+    return 1;
+bad3:
+    printf("failed reading in the elements\n");
+    close(fd);
     return 1;
 
 }
