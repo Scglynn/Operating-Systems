@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <time.h>
 
 struct matrix {
     int row;
@@ -23,7 +22,7 @@ int main(int argc, char *argv[])
     input_file = argv[1];
     output_file = argv[2];
 
-    int fd = open(input_file, O_RDONLY, 0666);
+    int fd = open(input_file,O_CREAT|O_RDONLY, 0666);
     if (fd < 0)
     {
         printf("Failed to read and open the file");
@@ -31,7 +30,7 @@ int main(int argc, char *argv[])
     }
     //stores(reads) in the matrix with all of it's elements
     if(read(fd,&matrices,sizeof(matrices)) != sizeof(matrices)) goto bad;
-    for (int i = 0; i < matrices.row*matrices.column; i++)
+    for (int i = 0; i < matrices.row/**matrices.column*/; i++)
     {
         //places the elements
         int * x =(int *)malloc(matrices.row*matrices.column*sizeof(int));
