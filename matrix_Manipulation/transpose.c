@@ -15,8 +15,8 @@ int count = 0;
 int main(int argc, char *argv[]) 
 {
     struct matrix matrices;
-    char * input_file;
-    char * output_file;
+    // char * input_file;
+    // char * output_file;
     
     if (argc !=3)
     {
@@ -24,32 +24,34 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    input_file = argv[1];
-    output_file = argv[2];
+    // input_file = argv[1];
+    // output_file = argv[2];
 
-    int fd_read = open(input_file,O_RDONLY, 0666);
+    int fd_read = open(argv[1],O_RDONLY, 0666);
     if (fd_read < 0)
     {
         printf("Failed to read and open the file");
-        exit(1);
+        return 1;
+        //exit(1);
     }
 
     //this will write the transpose matrices to the outputfile 
-    int out = open(output_file, O_CREAT|O_TRUNC|O_WRONLY,0666);
+    int out = open(argv[2], O_CREAT|O_TRUNC|O_WRONLY,0666);
     if (out < 0)
     {
         printf("Failed to create and open the file");
-        exit(1);
+        return 1;
+        //exit(1);
     }
 
-    int *x =(int *)malloc(1000000/*(matrices.row*matrices.column)*/* sizeof(*x));
+    int *x =(int *)malloc(1000000 * sizeof(*x));
  
 
     //stores(reads) in the matrix with all of it's elements
     if(read(fd_read,&matrices,sizeof(matrices)) != sizeof(matrices))
     {
         printf("read failed\n");
-        close(fd_read);
+        //close(fd_read);
         return 1;
     }
 
@@ -62,13 +64,13 @@ int main(int argc, char *argv[])
     matrices.column = z;
 
     //the new transpose matrix
-    int transpose[matrices.row][matrices.column];
+    int transpose_matrix[matrices.row][matrices.column];
 
-    for (int k = 0; k < matrices.row; k++)
+    for (int i = 0; i < matrices.row; i++)
     {
-        for (int l = 0; l < matrices.row; l++, count++)
+        for (int j = 0; j < matrices.row; j++, count++)
         {
-            transpose[l][k] = x[count];
+            transpose_matrix[j][i] = x[count];
         }
         
     }
@@ -78,7 +80,7 @@ int main(int argc, char *argv[])
     if(write(out,&matrices,sizeof(matrices)) != sizeof(matrices)) goto bad1;
 
     //places the elements
-    val = write(out, *transpose,(matrices.row * matrices.column)*sizeof(int));
+    val = write(out, *transpose_matrix,(matrices.row * matrices.column)*sizeof(int));
 
 
     free(x);
