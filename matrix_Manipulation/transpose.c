@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
         //exit(1);
     }
 
-    int *x =(int *)malloc(100 /*(matrices.row * matrices.column)*/ * sizeof(*x));
+    int *x =(int *)malloc(100000 /*(matrices.row * matrices.column)*/ * sizeof(*x));
  
 
     //stores(reads) in the matrix with all of it's elements
