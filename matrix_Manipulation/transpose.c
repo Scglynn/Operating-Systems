@@ -8,11 +8,15 @@ struct matrix {
     int column;
 };
 
+int val = 0;
+int holder = 0;
+
 int main(int argc, char *argv[]) 
 {
     struct matrix matrices;
     char * input_file;
     char * output_file;
+    int count = 0;
     if (argc !=3)
     {
         printf("you are missing an input or output file name\n");
@@ -22,54 +26,68 @@ int main(int argc, char *argv[])
     input_file = argv[1];
     output_file = argv[2];
 
-    int fd = open(input_file,O_CREAT|O_RDONLY, 0666);
+    int fd = open(input_file,O_RDONLY, 0666);
     if (fd < 0)
     {
         printf("Failed to read and open the file");
         exit(1);
     }
-    //stores(reads) in the matrix with all of it's elements
-    if(read(fd,&matrices,sizeof(matrices)) != sizeof(matrices)) goto bad;
-    for (int i = 0; i < matrices.row/**matrices.column*/; i++)
-    {
-        //places the elements
-        int * x =(int *)malloc(matrices.row*matrices.column*sizeof(* x));
-        if(read(fd, x, sizeof(x)) != sizeof(x)) goto bad3;
-        free(x);
-    }
 
     //this will write the transpose matrices to the outputfile 
-    int out = open(output_file, O_CREAT|O_WRONLY,0666);
+    int out = open(output_file, O_CREAT|O_TRUNC|O_WRONLY,0666);
     if (out < 0)
     {
         printf("Failed to create and open the file");
         exit(1);
     }
-    if(write(out,&matrices,sizeof(matrices)) != sizeof(matrices)) goto bad1;
-    for(int j = 0; j < matrices.row*matrices.column; j++)
+
+    int *x =(int *)malloc(1000000/*(matrices.row*matrices.column)*/* sizeof(*x));
+ 
+
+    //stores(reads) in the matrix with all of it's elements
+    if(read(fd,&matrices,sizeof(matrices)) != sizeof(matrices))
     {
-        //places the elements
-        int * y = (int *)malloc(matrices.row*matrices.column*sizeof(* y));
-        if(write(out, y, sizeof(y)) != sizeof(y)) goto bad1;
-        free(y);
+        printf("read failed\n");
+        close(fd);
+        return 1;
     }
 
+    holder = read(fd, x, (matrices.row * matrices.column)*sizeof(matrices));
+
+    //transpose the matrix
+
+    int z = matrices.row;
+    matrices.row = matrices.column;
+    matrices.column = z;
+
+    //the new transpose matrix
+    int transpose[matrices.row][matrices.column];
+
+    for (int k = 0; k < matrices.row; k++)
+    {
+        for (int l = 0; l < matrices.row; l++, count++)
+        {
+            transpose[l][k] = x[count];
+        }
+        
+    }
+    
+
+
+    if(write(out,&matrices,sizeof(matrices)) != sizeof(matrices)) goto bad1;
+
+    //places the elements
+    val = write(out, *transpose,(matrices.row * matrices.column)*sizeof(int));
+
+
+    free(x);
     close(fd);
     close(out);
     return 0;
 
-bad:
-    printf("read failed\n");
-    close(fd);
-    return 1;
-
 bad1:
     printf("write failed\n");
     close(out);
-    return 1;
-bad3:
-    printf("failed reading in the elements\n");
-    close(fd);
     return 1;
 
 }
