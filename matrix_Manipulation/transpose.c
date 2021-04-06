@@ -10,13 +10,14 @@ struct matrix {
 
 int val = 0;
 int holder = 0;
+int count = 0;
 
 int main(int argc, char *argv[]) 
 {
     struct matrix matrices;
     char * input_file;
     char * output_file;
-    int count = 0;
+    
     if (argc !=3)
     {
         printf("you are missing an input or output file name\n");
@@ -26,8 +27,8 @@ int main(int argc, char *argv[])
     input_file = argv[1];
     output_file = argv[2];
 
-    int fd = open(input_file,O_RDONLY, 0666);
-    if (fd < 0)
+    int fd_read = open(input_file,O_RDONLY, 0666);
+    if (fd_read < 0)
     {
         printf("Failed to read and open the file");
         exit(1);
@@ -45,17 +46,17 @@ int main(int argc, char *argv[])
  
 
     //stores(reads) in the matrix with all of it's elements
-    if(read(fd,&matrices,sizeof(matrices)) != sizeof(matrices))
+    if(read(fd_read,&matrices,sizeof(matrices)) != sizeof(matrices))
     {
         printf("read failed\n");
-        close(fd);
+        close(fd_read);
         return 1;
     }
 
-    holder = read(fd, x, (matrices.row * matrices.column)*sizeof(matrices));
+    holder = read(fd_read, x, (matrices.row * matrices.column)*sizeof(matrices));
+
 
     //transpose the matrix
-
     int z = matrices.row;
     matrices.row = matrices.column;
     matrices.column = z;
@@ -81,7 +82,7 @@ int main(int argc, char *argv[])
 
 
     free(x);
-    close(fd);
+    close(fd_read);
     close(out);
     return 0;
 
