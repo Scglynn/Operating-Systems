@@ -6,113 +6,93 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-struct matrix {
+struct matrix
+{
     int row;
-    int column;
+    int col;
 };
 
-int compare (const void *a, const void *b)
-{
-  int x = *(int *)a;
-  int y = *(int *)b;
-
-  if (x<y) 
-    return -1; 
-  if (x>y) 
-    return 1; 
-  return 0;
-}
-
 struct matrix matrices;
-
-int current[32][32];
+char * input_file;
+char * output_file;
 int num_argc;
 int fd_read;
 int fd_write;
-int holder = 0;
-int i, j, k;
-int * fd;
-char * input_file;
-char * output_file;
+int *fd;
 
-void read_matrices() 
-{
-    //this will read in what is inside the binary file and create the desired matrices
-    //this will make the size of the matrix
+int *transpose;
+int holder = 0;
+int count = 0;
+int val_hold = 0;
+
+void read_matrices() {
     fd_read = open(input_file, O_RDONLY);
-    if(fd_read < 0)
+    if (fd_read < 0)
     {
-        printf("Failed to read and open the file\n");
+        printf("Failed to open and read in the file");
         exit(1);
     }
-    for ( i = 0; i < 100; i++)
+    for (int i = 0; i < 200; i++)
     {
-        int row,column;
+        int row, column;
         if (!read(fd_read, &row, sizeof(row)))
         {
-            printf("Can not read in the rows\n");
+            printf("Can not read in the rows");
             close(fd_read);
             exit(1);
         }
-        if (!read(fd_read, &column, sizeof( column)))
+        if (!read(fd_read, &column, sizeof(column)))
         {
-            printf("Can not read in the columns\n");
+            printf("Can not read in the rows");
             close(fd_read);
             exit(1);
         }
-        matrices.row = row;
-        matrices.column = column;
-        fd = malloc((matrices.row * matrices.column) * sizeof(* fd));
 
+        matrices.row=row;
+        matrices.col=column;
+        fd = (int *)malloc((matrices.row * matrices.col) * sizeof(*fd));
 
-        holder = read(fd_read, fd, (matrices.row * matrices.column) * sizeof(matrices));
+        if (!read(fd_read, &matrices, sizeof(matrices)))
+        {
+            printf("Can not read in the elements");
+            close(fd_read);
+            exit(1);
+        }
+        holder = read(fd_read, fd, (matrices.row * matrices.col) * sizeof(*fd));
         free(fd);
+        
     }
+    
+    
+
 }
 
 void mult_matrices() {
 
-   // Multiplying first and second matrices and storing it in result
-   //then we will also sort each row in ascending order
-   for (i = 0; i < matrices.column; i++)
-   {
-       for (j = 0; j < matrices.column; j++)
-       {
-
-           for (k = 0; k < matrices.column; k++)
-           {
-               current[i][j] = current[i][k] * holder;
-           }
-           qsort(current[j],matrices.column, sizeof(int),compare);
-       }
-       
-   }
-   
-
-
-    //placing the results in the global variable so it can be used in the show function.
-
 
 }
-
-void show_matrices() {
-    // this will show the new matrices after multiplying 
-    // this is where we will also sort each row in ascending order
-    fd_write = open(output_file, O_CREAT|O_WRONLY,0666);
+void show_matrices()
+{
+    fd_write = open(output_file, O_CREAT|O_TRUNC|O_WRONLY, 0666);
     if (fd_write < 0)
     {
-        printf("Failed to create and open the file\n");
-        close(fd_write);
+        printf("Failed to create and write in the file");
         exit(1);
     }
-    if(write(fd_write, *current,(matrices.row * matrices.column) * sizeof(int)));
-
-    free(fd);
+    if(!write(fd_write, &matrices, sizeof(matrices)))
+    {
+        printf("failed to write");
+        exit(1);
+    }
+    //val_hold = write(fd_write, *holder, (matrices.row * matrices.col) * sizeof(int));
+    //free(fd);
     close(fd_read);
     close(fd_write);
+
 }
 
-int main(int argc, char* argv[]) 
+
+int main(int argc, char * argv[])
 {
     input_file = argv[1];
     output_file = argv[2];
@@ -153,6 +133,4 @@ int main(int argc, char* argv[])
     clock_gettime(CLOCK_REALTIME, &end);
     diff = 1000000000 * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
     printf("Elapsed:       %9luns\n", diff);
-
-    return 0;
 }
