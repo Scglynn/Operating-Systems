@@ -11,6 +11,11 @@ struct matrix {
     int column;
 };
 
+// read_matrices() does not save data in global variable(s) so mult_matrices() can operate on them
+// mult_matrices() does not operate on two matrices
+// show_matrices() does not write matrix headers or final 0-0 marker
+// elapsed time is not calculated right
+
 int compare (const void *a, const void *b)
 {
   int x = *(int *)a;
