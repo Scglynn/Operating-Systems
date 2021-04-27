@@ -30,13 +30,16 @@ int compare (const void *a, const void *b)
 
 struct matrix matrices;
 
-int current[32][32];
 int num_argc;
 int fd_read;
 int fd_write;
-int holder = 0;
+int **matrices_size;
+int **matrices_values;
+
+int count_size;
+int count_value;
 int i, j, k;
-int * fd;
+//int * fd;
 char * input_file;
 char * output_file;
 
@@ -45,53 +48,83 @@ void read_matrices()
     //this will read in what is inside the binary file and create the desired matrices
     //this will make the size of the matrix
     fd_read = open(input_file, O_RDONLY);
+
     if(fd_read < 0)
     {
         printf("Failed to read and open the file\n");
         exit(1);
     }
-    for ( i = 0; i < 100; i++)
+    matrices_values = malloc(100 * 8);
+    matrices_size = malloc(100 * 8);
+    while (read(fd_read, &matrices, 2 * sizeof(matrices)) == 2 * sizeof(matrices))
     {
-        int row,column;
-        if (!read(fd_read, &row, sizeof(row)))
+        if (matrices.row != 0 && matrices.column != 0)
         {
-            printf("Can not read in the rows\n");
-            close(fd_read);
-            exit(1);
+            matrices_size[count_size]= malloc(2 * sizeof(matrices));
+            matrices_size[count_size][0] = matrices.row;
+            matrices_size[count_size][1] = matrices.column;
+            count_size++;
+
+            matrices_values[count_value] = malloc(matrices.row * matrices.column *  4);
         }
-        if (!read(fd_read, &column, sizeof( column)))
+        else
         {
-            printf("Can not read in the columns\n");
-            close(fd_read);
-            exit(1);
+            break;
         }
-        matrices.row = row;
-        matrices.column = column;
-        fd = malloc((matrices.row * matrices.column) * sizeof(* fd));
+        if (read(fd_read,matrices_values[count_value],(matrices.row * matrices.column *  4)) !=  (matrices.row * matrices.column *  4)) break;
+        count_value++;
+        
+
+    //     fd_read = open(input_file, O_RDONLY);
+    // if(fd_read < 0)
+    // {
+    //     printf("Failed to read and open the file\n");
+    //     exit(1);
+    // }
+    // for ( i = 0; i < 100; i++)
+    // {
+    //     int row,column;
+    //     if (!read(fd_read, &row, sizeof(row)))
+    //     {
+    //         printf("Can not read in the rows\n");
+    //         close(fd_read);
+    //         exit(1);
+    //     }
+    //     if (!read(fd_read, &column, sizeof( column)))
+    //     {
+    //         printf("Can not read in the columns\n");
+    //         close(fd_read);
+    //         exit(1);
+    //     }
+    //     matrices.row = row;
+    //     matrices.column = column;
+    //     fd = malloc((matrices.row * matrices.column) * sizeof(* fd));
 
 
-        holder = read(fd_read, fd, (matrices.row * matrices.column) * sizeof(matrices));
-        free(fd);
+    //     holder = read(fd_read, fd, (matrices.row * matrices.column) * sizeof(matrices));
+    //     free(fd);
+    // }
     }
+    //free(fd);
 }
 
 void mult_matrices() {
 
    // Multiplying first and second matrices and storing it in result
    //then we will also sort each row in ascending order
-   for (i = 0; i < matrices.column; i++)
-   {
-       for (j = 0; j < matrices.column; j++)
-       {
+   //for (i = 0; i < matrices.column; i++)
+//    {
+//        for (j = 0; j < matrices.column; j++)
+//        {
 
-           for (k = 0; k < matrices.column; k++)
-           {
-               current[i][j] = current[i][k] * holder;
-           }
-           qsort(current[j],matrices.column, sizeof(int),compare);
-       }
+//            for (k = 0; k < matrices.column; k++)
+//            {
+//                //current[i][j] = current[i][k] * holder;
+//            }
+//            qsort(current[j],matrices.column, sizeof(int),compare);
+//        }
        
-   }
+//    }
    
 
 
@@ -103,18 +136,18 @@ void mult_matrices() {
 void show_matrices() {
     // this will show the new matrices after multiplying 
     // this is where we will also sort each row in ascending order
-    fd_write = open(output_file, O_CREAT|O_WRONLY,0666);
-    if (fd_write < 0)
-    {
-        printf("Failed to create and open the file\n");
-        close(fd_write);
-        exit(1);
-    }
-    if(write(fd_write, *current,(matrices.row * matrices.column) * sizeof(int)));
+    // fd_write = open(output_file, O_CREAT|O_WRONLY,0666);
+    // if (fd_write < 0)
+    // {
+    //     printf("Failed to create and open the file\n");
+    //     close(fd_write);
+    //     exit(1);
+    // }
+    // if(write(fd_write, *current,(matrices.row * matrices.column) * sizeof(int)));
 
-    free(fd);
-    close(fd_read);
-    close(fd_write);
+    // free(fd);
+    // close(fd_read);
+    // close(fd_write);
 }
 
 int main(int argc, char* argv[]) 
