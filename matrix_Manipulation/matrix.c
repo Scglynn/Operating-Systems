@@ -36,6 +36,7 @@ int fd_read;
 int fd_write;
 int **matrices_size;
 int **matrices_values;
+int **Matrices_results;
 
 int **current;
 int holder;
@@ -88,10 +89,19 @@ void mult_matrices() {
 
    // Multiplying first and second matrices and storing it in result
    //then we will also sort each row in ascending order
-   int temp[matrices.row * matrices.column];
-
-   
-
+   //size = 100 * 8
+   Matrices_results = malloc(size);
+   int k = 0;
+   for (int i = 0; i < matrices_size[0][0]; i++)
+   {
+       Matrices_results[i] = malloc(matrices.row * matrices.column * 4);
+       for (int j = 0; j < matrices_size[1][1]; j++)
+       {
+           Matrices_results[i][j] += matrices_values[i][k] * matrices_values[k][j];
+           k++;
+       }
+       
+   }
     //placing the results in the global variable so it can be used in the show function.
 
 
@@ -100,14 +110,19 @@ void mult_matrices() {
 void show_matrices() {
     // this will show the new matrices after multiplying 
     // this is where we will also sort each row in ascending order
-    //  fd_write = open(output_file, O_CREAT|O_WRONLY,0666);
+    // fd_write = open(output_file, O_CREAT|O_WRONLY,0666);
     // if (fd_write < 0)
     // {
     //     printf("Failed to create and open the file\n");
     //     close(fd_write);
     //     exit(1);
     // }
-    //close(fd_write);
+    // while (write(fd_write, *Matrices_results, 2 * sizeof(int)) == 2 * sizeof(int))
+    // {
+    //     if(write(fd_write, *Matrices_results,(matrices.row * matrices.column * 4)) != (matrices.row * matrices.column * 4)) break;
+    // }
+    // //holder = write(fd_write, Matrices_results, (matrices.row * matrices.column * 4));
+    // close(fd_write);
 }
 
 int main(int argc, char* argv[]) 
