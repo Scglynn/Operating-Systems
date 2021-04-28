@@ -103,8 +103,6 @@ void mult_matrices() {
        
    }
     //placing the results in the global variable so it can be used in the show function.
-
-
 }
 
 void show_matrices() {
