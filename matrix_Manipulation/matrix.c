@@ -11,7 +11,6 @@ struct matrix {
     int column;
 };
 
-// read_matrices() does not save data in global variable(s) so mult_matrices() can operate on them
 // mult_matrices() does not operate on two matrices
 // show_matrices() does not write matrix headers or final 0-0 marker
 // elapsed time is not calculated right
@@ -31,15 +30,19 @@ int compare (const void *a, const void *b)
 struct matrix matrices;
 
 int num_argc;
+int size = (100 * 8);
+//size_t nbytes = 2 * sizeof(int);
 int fd_read;
 int fd_write;
 int **matrices_size;
 int **matrices_values;
 
-int count_size;
-int count_value;
-int i, j, k;
-//int * fd;
+int **current;
+int holder;
+
+int count_nsize;
+int count_nvalue;
+
 char * input_file;
 char * output_file;
 
@@ -48,85 +51,46 @@ void read_matrices()
     //this will read in what is inside the binary file and create the desired matrices
     //this will make the size of the matrix
     fd_read = open(input_file, O_RDONLY);
-
     if(fd_read < 0)
     {
         printf("Failed to read and open the file\n");
         exit(1);
     }
-    matrices_values = malloc(100 * 8);
-    matrices_size = malloc(100 * 8);
-    while (read(fd_read, &matrices, 2 * sizeof(matrices)) == 2 * sizeof(matrices))
+    //Dynamically allocate memory for the pointer to pointer
+    matrices_size = malloc(size);
+    matrices_values = malloc(size);
+    while (read(fd_read, &matrices, 2 * sizeof(int)) == 2 * sizeof(int))
     {
         if (matrices.row != 0 && matrices.column != 0)
         {
-            matrices_size[count_size]= malloc(2 * sizeof(matrices));
-            matrices_size[count_size][0] = matrices.row;
-            matrices_size[count_size][1] = matrices.column;
-            count_size++;
-
-            matrices_values[count_value] = malloc(matrices.row * matrices.column *  4);
+            matrices_size[count_nsize] = malloc(2 * sizeof(int));
+            /*
+            turn the 1d array that has been dynamically allocated with nbytes to a 2d array with the same name 
+            the reasoning for you to do this is so that you won't have an overflow in the 2d array
+            */
+            matrices_size[count_nsize][0] = matrices.row;
+            matrices_size[count_nsize][1] = matrices.column;
+            count_nsize++;
         }
         else
         {
             break;
         }
-        if (read(fd_read,matrices_values[count_value],(matrices.row * matrices.column *  4)) !=  (matrices.row * matrices.column *  4)) break;
-        count_value++;
-        
-
-    //     fd_read = open(input_file, O_RDONLY);
-    // if(fd_read < 0)
-    // {
-    //     printf("Failed to read and open the file\n");
-    //     exit(1);
-    // }
-    // for ( i = 0; i < 100; i++)
-    // {
-    //     int row,column;
-    //     if (!read(fd_read, &row, sizeof(row)))
-    //     {
-    //         printf("Can not read in the rows\n");
-    //         close(fd_read);
-    //         exit(1);
-    //     }
-    //     if (!read(fd_read, &column, sizeof( column)))
-    //     {
-    //         printf("Can not read in the columns\n");
-    //         close(fd_read);
-    //         exit(1);
-    //     }
-    //     matrices.row = row;
-    //     matrices.column = column;
-    //     fd = malloc((matrices.row * matrices.column) * sizeof(* fd));
-
-
-    //     holder = read(fd_read, fd, (matrices.row * matrices.column) * sizeof(matrices));
-    //     free(fd);
-    // }
+        matrices_values[count_nvalue] = malloc(matrices.row * matrices.column * 4);
+        if(read(fd_read, matrices_values[count_nvalue], (matrices.row * matrices.column * 4)) != (matrices.row * matrices.column * 4)) break;
+        count_nvalue++;
     }
-    //free(fd);
+    //free(fd_read);
+    close(fd_read);
 }
 
 void mult_matrices() {
 
    // Multiplying first and second matrices and storing it in result
    //then we will also sort each row in ascending order
-   //for (i = 0; i < matrices.column; i++)
-//    {
-//        for (j = 0; j < matrices.column; j++)
-//        {
+   int temp[matrices.row * matrices.column];
 
-//            for (k = 0; k < matrices.column; k++)
-//            {
-//                //current[i][j] = current[i][k] * holder;
-//            }
-//            qsort(current[j],matrices.column, sizeof(int),compare);
-//        }
-       
-//    }
    
-
 
     //placing the results in the global variable so it can be used in the show function.
 
@@ -136,18 +100,14 @@ void mult_matrices() {
 void show_matrices() {
     // this will show the new matrices after multiplying 
     // this is where we will also sort each row in ascending order
-    // fd_write = open(output_file, O_CREAT|O_WRONLY,0666);
+    //  fd_write = open(output_file, O_CREAT|O_WRONLY,0666);
     // if (fd_write < 0)
     // {
     //     printf("Failed to create and open the file\n");
     //     close(fd_write);
     //     exit(1);
     // }
-    // if(write(fd_write, *current,(matrices.row * matrices.column) * sizeof(int)));
-
-    // free(fd);
-    // close(fd_read);
-    // close(fd_write);
+    //close(fd_write);
 }
 
 int main(int argc, char* argv[]) 

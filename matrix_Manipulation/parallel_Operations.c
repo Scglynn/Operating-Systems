@@ -7,7 +7,18 @@
 #include <unistd.h>
 #include <pthread.h>
 
+struct matrix matrices;
+
 int num_argc;
+int size = (100 * 8);
+int fd_read;
+int fd_write;
+int **matrices_size;
+int **matrices_values;
+
+int count_size;
+int count_value;
+
 char * input_file;
 char * output_file;
 
@@ -20,7 +31,34 @@ struct matrix {
 
 void read_matrices()
 {
-
+    //this will read in what is inside the binary file and create the desired matrices
+    //this will make the size of the matrix
+    fd_read = open(input_file, O_RDONLY);
+    matrices_size = malloc(size);
+    matrices_values = malloc(size);
+    if(fd_read < 0)
+    {
+        printf("Failed to read and open the file\n");
+        exit(1);
+    }
+    
+    while (read(fd_read, &matrices, 2 * sizeof(int)) == 2 * sizeof(int))
+    {
+        if (matrices.row != 0 && matrices.column != 0)
+        {
+            matrices_size[count_size] = malloc(2 * sizeof(int));
+            matrices_size[count_size][0] = matrices.row;
+            matrices_size[count_size][1] = matrices.column;
+            count_size++;
+        }
+        else
+        {
+            break;
+        }
+        matrices_values[count_value] = malloc(matrices.row * matrices.column * 4);
+        if(read(fd_read, matrices_values[count_value], (matrices.row * matrices.column * 4)) != (matrices.row * matrices.column * 4)) break;
+        count_value++;
+    }
 }
 
 void mult_matrices()
