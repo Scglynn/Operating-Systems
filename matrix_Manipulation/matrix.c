@@ -5,7 +5,7 @@
 #include <math.h>
 #include <fcntl.h>
 #include <unistd.h>
-#ifdef _REENTRANT
+//#ifdef _REENTRANT
 
 struct matrix {
     int row;
@@ -109,6 +109,7 @@ void mult_matrices() {
        for (int j = 0; j < matrices_size[1][1]; j++)
        {
            Matrices_results[i][j] += matrices_values[i][k] * matrices_values[k][j];
+           qsort(Matrices_results[j], matrices.column, sizeof(int), compare);
            k++;
        }
        
