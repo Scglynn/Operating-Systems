@@ -5,6 +5,7 @@
 #include <math.h>
 #include <fcntl.h>
 #include <unistd.h>
+#ifdef _REENTRANT
 
 struct matrix {
     int row;
