@@ -47,6 +47,16 @@ int count_nvalue;
 char * input_file;
 char * output_file;
 
+// lock();
+// while (n < 100)
+//     ;
+// unlock();
+// int wait = 1;
+// while (wait) {
+//     lock();
+//     wait = n < 100;
+//     unlock();
+// }
 void read_matrices() 
 {
     //this will read in what is inside the binary file and create the desired matrices
